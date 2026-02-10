@@ -50,7 +50,10 @@
                             (fn [next-handler]
                               (-> next-handler
                                 (electric-jetty9/wrap-reject-stale-client config)
-                                (wrap-params))))
+                                (wrap-params)))
+                            {:ws-idle-timeout (* 60 1000)          ; 60 seconds in milliseconds
+                             :ws-max-binary-size (* 100 1024 1024) ; 100MB - for demo
+                             :ws-max-text-size (* 100 1024 1024)}) ; 100MB - for demo
                           ;; Gzip served assets
                           (.setHandler server (doto (new org.eclipse.jetty.server.handler.gzip.GzipHandler)
                                                 (.setMinGzipSize 1024)

@@ -30,7 +30,11 @@
                      (wrap-content-type)) ; 1. boilerplate – to server assets with correct mime/type.
                    {:host "0.0.0.0", :port 8080, :join? false
                     :configurator (fn [server] ; tune jetty
-                                    (electric-jetty9-ws-install server "/" (fn [ring-request] (electric-starter-app.main/electric-boot ring-request))))}))
+                                    (electric-jetty9-ws-install server "/" (fn [ring-request] (electric-starter-app.main/electric-boot ring-request))
+                                      identity ; no WS middleware
+                                      {:ws-idle-timeout (* 60 1000)          ; 60 seconds in milliseconds
+                                       :ws-max-binary-size (* 100 1024 1024) ; 100MB - for demo
+                                       :ws-max-text-size (* 100 1024 1024)}))})) ; 100MB - for demo
      (log/info "👉 http://0.0.0.0:8080")))
 
 (declare browser-process)
