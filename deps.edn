@@ -16,6 +16,9 @@
                                     ring/ring-servlet                             {:mvn/version "1.8.2"}
                                     org.eclipse.jetty.websocket/websocket-server  {:mvn/version "9.4.31.v20200723"} ; matching jetty version from ring-jetty-adapter
                                     org.eclipse.jetty.websocket/websocket-servlet {:mvn/version "9.4.31.v20200723"}}}
-           :private {:override-deps {com.hyperfiddle/electric {:local/root "../electric"}}}}
+           :local {:override-deps {com.hyperfiddle/electric            {:local/root "../electric"}
+                                    com.hyperfiddle/hyperfiddle-contrib {:local/root "../hyperfiddle-contrib"}
+                                    com.hyperfiddle/electric-secret     {:local/root "../electric-secret"}
+                                    com.hyperfiddle/hyperfiddle-agent   {:local/root "../hyperfiddle-agent"}}}}
  :mvn/repos
  {"clojars" {:url "https://repo.clojars.org/" :snapshots {:enabled true :update :always}}}}
