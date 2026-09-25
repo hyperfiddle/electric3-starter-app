@@ -4,7 +4,7 @@
 
    #?(:clj [shadow.cljs.devtools.api :as shadow-cljs-compiler])
    #?(:clj [shadow.cljs.devtools.server :as shadow-cljs-compiler-server])
-   #?(:clj [clojure.tools.logging :as log])
+   #?(:clj [hyperfiddle.log :as log])
 
    #?(:clj [ring.adapter.jetty :as ring])
    #?(:clj [ring.util.response :as ring-response])
@@ -15,9 +15,11 @@
 
 (comment (-main)) ; repl entrypoint
 
+#?(:clj (def logger (log/get-logger)))
+
 #?(:clj ; server entrypoint
    (defn -main [& args]
-     (log/info "Starting Electric compiler and server...")
+     (log/info logger "Starting Electric compiler and server...")
 
      (shadow-cljs-compiler-server/start!)
      (shadow-cljs-compiler/watch :dev)
@@ -36,7 +38,7 @@
                     :ws-idle-timeout (* 60 1000)          ; 60 seconds in milliseconds
                     :ws-max-binary-size (* 100 1024 1024) ; 100MB - for demo
                     :ws-max-text-size (* 100 1024 1024)}))  ; 100M - for demo.
-     (log/info "👉 http://0.0.0.0:8080")))
+     (log/info logger "👉 http://0.0.0.0:8080")))
 
 (declare browser-process)
 #?(:cljs ; client entrypoint

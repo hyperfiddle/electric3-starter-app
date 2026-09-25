@@ -1,8 +1,10 @@
 (ns build
   (:require [clojure.tools.build.api :as b]
-            [clojure.tools.logging :as log]
+            [hyperfiddle.log :as log]
             [shadow.cljs.devtools.api :as shadow-api]
             [shadow.cljs.devtools.server :as shadow-server]))
+
+(def logger (log/get-logger))
 
 (def electric-user-version (b/git-process {:git-args "describe --tags --long --always --dirty"}))
 
@@ -13,7 +15,7 @@ application classpath to be available"
   [{:keys [optimize debug verbose version shadow-build]
     :or {optimize true, debug false, verbose false, version electric-user-version, shadow-build :prod}
     :as config}]
-  (log/info 'build-client (pr-str config #_argmap))
+  (log/info logger (str "build-client " (pr-str config #_argmap)))
   (b/delete {:path "resources/public/electric_starter_app/js"})
   (b/delete {:path "resources/electric-manifest.edn"})
 
@@ -33,7 +35,7 @@ application classpath to be available"
            :closure-defines  {'hyperfiddle.electric-client3/ELECTRIC_USER_VERSION version}}]})
       shadow-status (assert (= shadow-status :done) "shadow-api/release error")) ; fail build on error
   (shadow-server/stop!)
-  (log/info "client built"))
+  (log/info logger "client built"))
 
 (def class-dir "target/classes")
 
@@ -42,7 +44,7 @@ application classpath to be available"
     :or {optimize true, debug false, verbose false, skip-client false, version electric-user-version, aliases [:prod], shadow-build :prod}
     :as args}]
   ; careful, shell quote escaping combines poorly with clj -X arg parsing, strings read as symbols
-  (log/info 'uberjar (pr-str args))
+  (log/info logger (str "uberjar " (pr-str args)))
   (b/delete {:path "target"})
 
   (when-not skip-client
@@ -54,4 +56,4 @@ application classpath to be available"
     (b/uber {:class-dir class-dir
              :uber-file (str "target/" jar-name)
              :basis     (b/create-basis {:project "deps.edn" :aliases aliases})})
-    (log/info jar-name)))
+    (log/info logger jar-name)))
